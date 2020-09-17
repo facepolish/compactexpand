@@ -8,9 +8,29 @@
 
 import UIKit
 import Messages
-
+import AudioToolbox
 class MessagesViewController: MSMessagesAppViewController {
     
+    @IBAction func sendmessage(_ sender: Any) {
+        guard let conversation = self.activeConversation else {return}
+        let message = MSMessage()
+        let layout = MSMessageTemplateLayout()
+        message.layout = layout
+        var url = URLComponents()
+
+        url.scheme = "https";
+        url.host = "www.hiroshi.com";
+
+        message.url = url.url
+
+
+        conversation.send(message,completionHandler:{(error) in
+                if let error = error {
+                    print (error)
+                }
+        })
+
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -40,6 +60,11 @@ class MessagesViewController: MSMessagesAppViewController {
         // extension on a remote device.
         
         // Use this method to trigger UI updates in response to the message.
+        let soundIdRing: SystemSoundID = 1000 //鐘
+        AudioServicesPlaySystemSound(soundIdRing)
+
+        print ("Did Recieve")
+
     }
     
     override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
